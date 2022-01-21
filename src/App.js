@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Container } from "semantic-ui-react";
+import MainHeader from "./components/MainHeader";
+import "./App.css";
+import NewEntryForm from "./components/NewEntryForm";
+import DisplayBalance from "./components/DisplayBalance";
+import DisplayBalances from "./components/DisplayBalances";
+import EntryLines from "./components/EntryLines";
 
 function App() {
+  const [entries, setentries] = useState(initialEntries);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <MainHeader title="Budget" />
+      <DisplayBalance title="Your Balance" value="2,550.53" size="small" />
+      <DisplayBalances />
+      <MainHeader title="History" type="h3" />
+      <EntryLines entries={entries} />
+
+      <MainHeader title="Add new ransaction" type="h3" />
+      <NewEntryForm />
+    </Container>
   );
 }
 
 export default App;
+
+var initialEntries = [
+  {
+    id: 1,
+    description: "Work income",
+    value: "$1000,00",
+    isExpense: false,
+  },
+  {
+    id: 2,
+    description: "Water bill",
+    value: "$20,00",
+    isExpense: true,
+  },
+  {
+    id: 3,
+    description: "Rent",
+    value: "$300",
+    isExpense: true,
+  },
+  {
+    id: 4,
+    description: "Power bill",
+    value: "$300",
+    isExpense: true,
+  },
+];
