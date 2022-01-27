@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
 import MainHeader from "./components/MainHeader";
 import "./App.css";
@@ -6,19 +6,90 @@ import NewEntryForm from "./components/NewEntryForm";
 import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
 import EntryLines from "./components/EntryLines";
+import ModalEdit from "./components/ModalEdit";
 
 function App() {
-  const [entries, setentries] = useState(initialEntries);
+  const [entries, setEntries] = useState(initialEntries);
+  const [description, setDescription] = useState("");
+  const [value, setValue] = useState("");
+  const [isExpense, setIsExpense] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [entryId, setEntryId] = useState();
+
+  useEffect(()=>{
+    if(!isOpen && entryId){
+      const index = entries.findIndex(entry => entry.id === entryId);
+      const newEntries = [...entries];
+      newEntries[index].description = description;
+      newEntries[index].value = value;
+      newEntries[index].isExpense = isExpense;
+      setEntries(newEntries);
+
+    }
+  },[isOpen]);
+
+  function deleteEntry(id) {
+    const result = entries.filter((entry) => entry.id !== id);
+    setEntries(result);
+  }
+
+  function addEntry(description, value, isExpense) {
+    const result = entries.concat({
+      id: entries.length + 1,
+      description,
+      value,
+      isExpense,
+    });
+    setEntries(result);
+  }
+
+  function editEntry(id) {
+    console.log("===edit", id);
+    if (id) {
+      const index = entries.findIndex((entry) => entry.id === id);
+      const entry = entries[index];
+      console.log("====entry", entry);
+      setEntryId(id);
+      setDescription(entry.description);
+      setValue(entry.value);
+      setIsExpense(entry.isExpense);
+      setIsOpen(true);
+    }
+  }
+
   return (
     <Container>
       <MainHeader title="Budget" />
       <DisplayBalance title="Your Balance" value="2,550.53" size="small" />
       <DisplayBalances />
       <MainHeader title="History" type="h3" />
-      <EntryLines entries={entries} />
+      <EntryLines
+        entries={entries}
+        deleteEntry={deleteEntry}
+        editEntry={editEntry}
+      />
 
       <MainHeader title="Add new ransaction" type="h3" />
-      <NewEntryForm />
+      <NewEntryForm
+        addEntry={addEntry}
+        description={description}
+        value={value}
+        isExpense={isExpense}
+        setDescription={setDescription}
+        setValue={setValue}
+        setIsExpense={setIsExpense}
+      />
+      <ModalEdit
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        addEntry={addEntry}
+        description={description}
+        value={value}
+        isExpense={isExpense}
+        setDescription={setDescription}
+        setValue={setValue}
+        setIsExpense={setIsExpense}
+      />
     </Container>
   );
 }
