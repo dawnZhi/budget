@@ -7,7 +7,7 @@ import DisplayBalance from "./components/DisplayBalance";
 import DisplayBalances from "./components/DisplayBalances";
 import EntryLines from "./components/EntryLines";
 import ModalEdit from "./components/ModalEdit";
-import { createStore } from "redux";
+
 function App() {
   const [entries, setEntries] = useState(initialEntries);
   const [description, setDescription] = useState("");
@@ -32,35 +32,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const store = createStore((state = initialEntries, action) => {
-    console.log("action", action);
-    let newEntries;
-    switch (action.type) {
-      case "ADD_ENTRY":
-        newEntries = state.concat({ ...action.payload });
-        return newEntries;
-      case "REMOVE_ENTRY":
-        newEntries = state.filter((entry) => entry.id !== action.payload);
-        return newEntries;
-      default:
-        return state;
-    }
-  });
 
-  store.subscribe(() => {
-    console.log("store: ", store.getState());
-  });
-  const payload_add = {
-    id: 5,
-    description: "hello from redux",
-    value: 100,
-    isExpense: false,
-  };
-  const payload_remove = {
-    id: 1,
-  };
-  store.dispatch({ type: "ADD_ENTRY", payload: payload_add });
-  store.dispatch({ type: "REMOVE_ENTRY", payload: payload_remove });
 
   useEffect(() => {
     let totalIncomes = 0;
@@ -179,3 +151,4 @@ var initialEntries = [
     isExpense: true,
   },
 ];
+
